@@ -40,6 +40,49 @@ You need IPFS installed in your `$PATH` and you should run `ipfs daemon` in a
 separate terminal. This allows the coordinator and participants to easily share
 `.zkey` files.
 
+## Quick start with Docker
+
+```bash
+git clone git@github.com:weijiekoh/multisetups.git &&
+cd multisetups &&
+docker-compose build &&
+docker-compose up
+```
+
+To create a new ceremony with the sample `.zkey` files:
+
+```
+docker-compose exec multisetups node build/index.js init -d /multisetups/zkeys
+Ceremony initialised. Please give this multihash to the first participant and keep your IPFS node running and connected to the IPFS network.
+Qmeg59hpYk82DYmdupTgYTuZNedLeTKBJNQ2r38EpUqgYn
+```
+
+To download the ceremony files as a contributor:
+
+```
+docker-compose exec multisetups node build/index.js download -m Qmeg59hpYk82DYmdupTgYTuZNedLeTKBJNQ2r38EpUqgYn -d /ceremony/old
+
+Saving file(s) to /ceremony/old
+ 247.36 KiB / 247.36 KiB [========================================] 100.00% 0s
+```
+
+To contribute:
+
+```
+docker-compose exec multisetups node build/index.js contribute -d /ceremony/old -n /ceremony/new
+
+Contribution complete. Please run the 'upload' subcommand. Next, sign the transcript in /ceremony/new/transcript.1.txt and send it to the coordinator.
+```
+
+To upload the contribution:
+
+```
+docker-compose exec multisetups node build/index.js upload -d /ceremony/new
+
+Contribution uploaded. Please send this multihash to the coordinator and keep your IPFS node running and connected to the IPFS network.
+QmYDsgWYRuHNYBeJABGZ6Csdj256jvj4E4WYX2dJ6w6iCj
+```
+
 ## Installation
 
 ```bash

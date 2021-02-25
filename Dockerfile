@@ -11,4 +11,9 @@ WORKDIR /multisetups
 COPY . /multisetups/
 RUN npm i
 
-CMD ipfs init && ipfs daemon
+CMD rm -rf /root/.ipfs2 && \
+    mkdir -p /root/.ipfs && \
+    mv /root/.ipfs /root/.ipfs2 && \
+    ipfs init -e && \
+    mv /root/.ipfs2 /root/.ipfs && \
+    ipfs daemon
