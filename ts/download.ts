@@ -34,8 +34,7 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
             required: true,
             action: 'store',
             type: 'str',
-            help: 'The directory that contains the .zkey files. Each .zkey ' +
-                'file must follow this naming scheme: ' + FORMAT
+            help: 'The directory to store the downloaded .zkey files.',
         }
     )
 

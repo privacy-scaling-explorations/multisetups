@@ -23,7 +23,7 @@ The `multisetups` utility seeks to meet them with the following goals in mind:
 
 2. Ease of use for contributors:
 
-    - Contributors should only have to run **two** commands to participate in
+    - Contributors should only have to run a few commands to participate in
       the ceremony. Moreover, the software will be Dockerised for maximum
       ease-of-use.
 

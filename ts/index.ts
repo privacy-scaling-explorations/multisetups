@@ -20,6 +20,11 @@ import {
 } from './contribute'
 
 import {
+    verify,
+    configureSubparsers as configureSubparsersForVerify,
+} from './verify'
+
+import {
     upload,
     configureSubparsers as configureSubparsersForUpload,
 } from './upload'
@@ -39,6 +44,7 @@ const main = async () => {
     configureSubparsersForDownload(subparsers)
     configureSubparsersForUpload(subparsers)
     configureSubparsersForContribute(subparsers)
+    configureSubparsersForVerify(subparsers)
 
     const args = parser.parse_args()
     
@@ -62,6 +68,8 @@ const main = async () => {
             return (await contribute(args.dir, args['new'], args.entropy))
         } else if (args.subcommand === 'upload') {
             return (await upload(args.dir))
+        } else if (args.subcommand === 'verify') {
+            return (await verify(args.dir, args.ptau))
         }
     } catch (e) {
         console.error(e)
