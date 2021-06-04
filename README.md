@@ -94,7 +94,7 @@ npm i
 ## Creating a new ceremony
 
 First, create a `zkeys` directory and store all your `.zkey` files in it. You
-can use [`zkey-manager`](https://github.com/weijiekoh/zkey-manager) to create
+can use [`zkey-manager`](https://github.com/appliedzkp/zkey-manager) to create
 them.
 
 Next, run:
