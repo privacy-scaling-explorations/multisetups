@@ -6,7 +6,7 @@ services:
     volumes:
       - type: bind
         target: /ceremony
-        source: ./
+        source: ${CEREMONY_DIR:-./ceremony}
 
 volumes:
   ceremony:
