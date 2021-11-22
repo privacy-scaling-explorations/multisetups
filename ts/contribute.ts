@@ -110,12 +110,12 @@ const contribute = async (
 
     for (const c of contribs) {
         currentEntropy = crypto.createHash('sha512').update(currentEntropy, 'utf8').digest('hex')
-        
+
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
         const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey contribute ${o} ${n}`
-        const out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
-
+        let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
+        out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
         transcript += `${out}\n\n`
     }
