@@ -69,7 +69,7 @@ const download = async (
         return 1
     }
 
-    const isZkeyDirValid = validateZkeyDir(dirname, true) === 0
+    const isZkeyDirValid = validateZkeyDir(dirname) === 0
     if (!isZkeyDirValid) {
         return 1
     }
