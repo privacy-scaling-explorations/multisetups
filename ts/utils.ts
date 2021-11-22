@@ -17,19 +17,13 @@ const parseZkeyFilename = (file: string) => {
 
 const validateZkeyDir = (
     dirname: string,
-    mayContainTranscript = false,
 ) => {
     if (!fs.existsSync(dirname)) {
         console.error(`Error: ${dirname} does not exist`)
         return 1
     }
     const zkeyFiles: any[] = []
-    let totalFiles = 0
     for (const file of fs.readdirSync(dirname)) {
-        if (mayContainTranscript && file.startsWith('transcript') && file.endsWith('.txt')) {
-            continue
-        }
-        totalFiles ++
         const m = parseZkeyFilename(file)
         if (m) {
             const name = m.name
@@ -42,18 +36,12 @@ const validateZkeyDir = (
         }
     }
 
-    if (zkeyFiles.length !== totalFiles && mayContainTranscript === false) {
-        console.error(`Error: ${dirname} should only contain .zkey files`)
-        return 1
-    }
-
     if (zkeyFiles.length === 0) {
         console.error('Error: there are no .zkey files in', dirname)
         return 1
     }
 
     // Validate zkey filenames
-    let isValid = true
     const uniqNames = new Set()
     for (const z of zkeyFiles) {
         uniqNames.add(z.name)
