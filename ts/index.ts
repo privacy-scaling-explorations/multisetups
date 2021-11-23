@@ -65,7 +65,7 @@ const main = async () => {
         } else if (args.subcommand === 'download') {
             return (await download(args.multihash, args.dir))
         } else if (args.subcommand === 'contribute') {
-            return (await contribute(args.dir, args['new'], args.entropy))
+            return (await contribute(args.dir, args.outdir, args.name, args.entropy))
         } else if (args.subcommand === 'upload') {
             return (await upload(args.dir))
         } else if (args.subcommand === 'verify') {

@@ -29,13 +29,24 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-n',
-        '--new',
+        '-o',
+        '--outdir',
         {
             required: true,
             action: 'store',
             type: 'str',
             help: 'The directory to store the new .zkey files.',
+        }
+    )
+
+    parser.add_argument(
+        '-n',
+        '--name',
+        {
+            required: true,
+            action: 'store',
+            type: 'str',
+            help: 'The name of the contributor. Will be visible in verifications.',
         }
     )
 
@@ -55,6 +66,7 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
 const contribute = async (
     dirname: string,
     newDirname: string,
+    contributorName: string,
     entropy: string,
 ) => {
     if (!fs.existsSync(newDirname)) {
@@ -113,7 +125,7 @@ const contribute = async (
 
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
-        const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey contribute ${o} ${n}`
+        const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey contribute ${o} ${n} --name="${contributorName}"`
         let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
