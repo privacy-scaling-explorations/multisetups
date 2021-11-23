@@ -15,13 +15,9 @@ const parseZkeyFilename = (file: string) => {
     return null
 }
 
-const validateZkeyDir = (
+const getZkeyFiles = (
     dirname: string,
-) => {
-    if (!fs.existsSync(dirname)) {
-        console.error(`Error: ${dirname} does not exist`)
-        return 1
-    }
+): Array<any> => {
     const zkeyFiles: any[] = []
     for (const file of fs.readdirSync(dirname)) {
         const m = parseZkeyFilename(file)
@@ -35,6 +31,17 @@ const validateZkeyDir = (
             })
         }
     }
+    return zkeyFiles
+}
+
+const validateZkeyDir = (
+    dirname: string,
+) => {
+    if (!fs.existsSync(dirname)) {
+        console.error(`Error: ${dirname} does not exist`)
+        return 1
+    }
+    const zkeyFiles = getZkeyFiles(dirname)
 
     if (zkeyFiles.length === 0) {
         console.error('Error: there are no .zkey files in', dirname)
@@ -71,6 +78,7 @@ const countDirents = (
 
 export {
     FORMAT,
+    getZkeyFiles,
     validateZkeyDir,
     parseZkeyFilename,
     countDirents,
