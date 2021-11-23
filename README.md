@@ -45,6 +45,7 @@ separate terminal. This allows the coordinator and participants to easily share
 ```bash
 git clone git@github.com:weijiekoh/multisetups.git &&
 cd multisetups &&
+source scripts/git-snapshot.sh &&
 docker-compose build &&
 docker-compose up
 ```
