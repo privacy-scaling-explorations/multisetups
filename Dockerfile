@@ -18,6 +18,7 @@ CMD rm -rf /root/.ipfs2 && \
     mv /root/.ipfs2 /root/.ipfs && \
     ipfs daemon
 
+ENV CEREMONY ${CEREMONY}
 ENV GIT_HEAD ${GIT_HEAD}
 ENV GIT_HEAD_NAME ${GIT_HEAD_NAME}
 ENV GIT_UPSTREAM ${GIT_UPSTREAM}

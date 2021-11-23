@@ -66,13 +66,22 @@ docker-compose exec multisetups node build/index.js download -m Qmeg59hpYk82DYmd
 Saving file(s) to /ceremony/old
  247.36 KiB / 247.36 KiB [========================================] 100.00% 0s
 ```
-
 To contribute:
 
 ```
 docker-compose exec multisetups node build/index.js contribute -d /ceremony/old -n /ceremony/new
 
-Contribution complete. Please run the 'upload' subcommand. Next, sign the transcript in /ceremony/new/transcript.1.txt and send it to the coordinator.
+Contribution generated, and transcript written to /ceremony/new/transcript.1.txt.
+Please run the 'attest' command next.
+```
+
+To generate an attestation file:
+
+```
+docker-compose exec multisetups node build/index.js attest -d /ceremony/new -t attestation.template.md
+
+Wrote prepopulated attestation to /ceremony/new/attestation.1.md.
+Please edit this file, sign it, and run the 'upload' subcommand.
 ```
 
 To upload the contribution:
@@ -125,6 +134,14 @@ done on an airgapped computer.
 ```
 node build/index.js contribute -m <MULTIHASH> -d ./old -n ./new
 ```
+
+Generate an attestation file:
+
+```
+node build/index.js attest -d ./new -t attestation.template.md
+```
+
+Edit this attestation file to fill out the missing info, and sign it.
 
 Finally, upload the files:
 

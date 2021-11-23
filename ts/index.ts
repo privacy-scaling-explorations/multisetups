@@ -20,6 +20,11 @@ import {
 } from './contribute'
 
 import {
+    attest,
+    configureSubparsers as configureSubparsersForAttest,
+} from './attest'
+
+import {
     verify,
     configureSubparsers as configureSubparsersForVerify,
 } from './verify'
@@ -30,7 +35,7 @@ import {
 } from './upload'
 
 const run = async () => {
-    const parser = new argparse.ArgumentParser({ 
+    const parser = new argparse.ArgumentParser({
         description: 'multisetups: create and contribute to a trusted setup ceremony using snarkjs for multiple circuits',
     })
 
@@ -44,10 +49,11 @@ const run = async () => {
     configureSubparsersForDownload(subparsers)
     configureSubparsersForUpload(subparsers)
     configureSubparsersForContribute(subparsers)
+    configureSubparsersForAttest(subparsers)
     configureSubparsersForVerify(subparsers)
 
     const args = parser.parse_args()
-    
+
     const loadConfig = (configFile: string) => {
         try {
             return yaml.load(fs.readFileSync(configFile).toString())
@@ -66,6 +72,8 @@ const run = async () => {
             return (await download(args.multihash, args.dir))
         } else if (args.subcommand === 'contribute') {
             return (await contribute(args.dir, args['new'], args.entropy))
+        } else if (args.subcommand === 'attest') {
+            return (await attest(args.template, args.dir))
         } else if (args.subcommand === 'upload') {
             return (await upload(args.dir))
         } else if (args.subcommand === 'verify') {

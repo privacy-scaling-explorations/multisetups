@@ -113,9 +113,11 @@ const contribute = async (
     }
 
     const transcriptFilepath = path.join(newDirname, `transcript.${contribNum}.txt`)
-    console.log(`Contribution complete. Please run the 'upload' subcommand. Next, sign the transcript in ${transcriptFilepath} and send it to the coordinator.`)
-
     fs.writeFileSync(transcriptFilepath, transcript.trim() + '\n')
+    console.log(
+        `Contribution generated, and transcript written to ${transcriptFilepath}.\n` +
+            `Please run the 'attest' command next.`
+    )
 
     return 0
 }
