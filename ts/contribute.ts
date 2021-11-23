@@ -76,7 +76,7 @@ const contribute = async (
     }
 
     // Perform contributions
-    let contribNum
+    let contribNum = 0
     const contribs: any[] = []
     for (const file of fs.readdirSync(dirname)) {
         const m = parseZkeyFilename(file)
