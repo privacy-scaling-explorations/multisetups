@@ -29,7 +29,7 @@ import {
     configureSubparsers as configureSubparsersForUpload,
 } from './upload'
 
-const main = async () => {
+const run = async () => {
     const parser = new argparse.ArgumentParser({ 
         description: 'multisetups: create and contribute to a trusted setup ceremony using snarkjs for multiple circuits',
     })
@@ -77,6 +77,10 @@ const main = async () => {
     }
 
     return 0
+}
+
+const main = async () => {
+    process.exit(await run())
 }
 
 if (require.main === module) {
