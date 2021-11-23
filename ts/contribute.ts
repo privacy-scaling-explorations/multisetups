@@ -6,8 +6,8 @@ import * as path from 'path'
 
 import {
     FORMAT,
-    validateZkeyDir,
     parseZkeyFilename,
+    countDirents
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -61,23 +61,15 @@ const contribute = async (
         fs.mkdirSync(newDirname)
     }
 
-    // newDirname must be  empty
-    let numFiles = 0
-    for (const file of fs.readdirSync(newDirname)) {
-        numFiles ++
-    }
-
-    if (numFiles !== 0) {
+    // newDirname must be empty
+    const numNewFiles = countDirents(newDirname)
+    if (numNewFiles !== 0) {
         console.error(`Error: ${newDirname} is not empty.`)
         return 1
     }
 
     // The directory must not be empty
-    numFiles = 0
-    for (const file of fs.readdirSync(dirname)) {
-        numFiles ++
-    }
-
+    const numFiles = countDirents(dirname)
     if (numFiles === 0) {
         console.error(`Error: ${dirname} is empty. Run the 'download' subcommand first.`)
         return 1

@@ -59,8 +59,19 @@ const validateZkeyDir = (
     return 0
 }
 
+const countDirents = (
+    dirname: string,
+): number => {
+    let numFiles = 0
+    for (const _file of fs.readdirSync(dirname)) {
+        numFiles ++
+    }
+    return numFiles
+}
+
 export {
     FORMAT,
     validateZkeyDir,
     parseZkeyFilename,
+    countDirents,
 }

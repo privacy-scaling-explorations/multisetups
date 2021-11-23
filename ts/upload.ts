@@ -6,8 +6,7 @@ import * as path from 'path'
 
 import {
     FORMAT,
-    validateZkeyDir,
-    parseZkeyFilename,
+    countDirents,
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -38,11 +37,7 @@ const upload = async (
     }
 
     // The directory must not be empty
-    let numFiles = 0
-    for (const file of fs.readdirSync(dirname)) {
-        numFiles ++
-    }
-
+    const numFiles = countDirents(dirname)
     if (numFiles === 0) {
         console.error(`Error: ${dirname} should not be empty`)
         return 1

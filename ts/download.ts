@@ -5,9 +5,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import {
-    FORMAT,
     validateZkeyDir,
-    parseZkeyFilename,
+    countDirents,
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -49,11 +48,7 @@ const download = async (
     }
 
     // The directory must be empty
-    let numFiles = 0
-    for (const file of fs.readdirSync(dirname)) {
-        numFiles ++
-    }
-
+    const numFiles = countDirents(dirname)
     if (numFiles > 0) {
         console.error(`Error: ${dirname} should be empty`)
         return 1
