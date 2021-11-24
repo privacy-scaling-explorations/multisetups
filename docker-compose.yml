@@ -6,7 +6,11 @@ services:
     volumes:
       - type: bind
         target: /ceremony
-        source: ./
+        source: ${CEREMONY_DIR:-./ceremony}
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
 
 volumes:
   ceremony:

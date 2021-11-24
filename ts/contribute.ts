@@ -6,8 +6,8 @@ import * as path from 'path'
 
 import {
     FORMAT,
-    validateZkeyDir,
     parseZkeyFilename,
+    countDirents
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -73,30 +73,22 @@ const contribute = async (
         fs.mkdirSync(newDirname)
     }
 
-    // newDirname must be  empty
-    let numFiles = 0
-    for (const file of fs.readdirSync(newDirname)) {
-        numFiles ++
-    }
-
-    if (numFiles !== 0) {
+    // newDirname must be empty
+    const numNewFiles = countDirents(newDirname)
+    if (numNewFiles !== 0) {
         console.error(`Error: ${newDirname} is not empty.`)
         return 1
     }
 
     // The directory must not be empty
-    numFiles = 0
-    for (const file of fs.readdirSync(dirname)) {
-        numFiles ++
-    }
-
+    const numFiles = countDirents(dirname)
     if (numFiles === 0) {
         console.error(`Error: ${dirname} is empty. Run the 'download' subcommand first.`)
         return 1
     }
 
     // Perform contributions
-    let contribNum
+    let contribNum = 0
     const contribs: any[] = []
     for (const file of fs.readdirSync(dirname)) {
         const m = parseZkeyFilename(file)
@@ -125,7 +117,7 @@ const contribute = async (
 
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
-        const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey contribute ${o} ${n} --name="${contributorName}"`
+        const cmd = `node ./node_modules/.bin/snarkjs zkey contribute ${o} ${n} --name="${contributorName}`
         let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
@@ -133,9 +125,11 @@ const contribute = async (
     }
 
     const transcriptFilepath = path.join(newDirname, `transcript.${contribNum}.txt`)
-    console.log(`Contribution complete. Please run the 'upload' subcommand. Next, sign the transcript in ${transcriptFilepath} and send it to the coordinator.`)
-
     fs.writeFileSync(transcriptFilepath, transcript.trim() + '\n')
+    console.log(
+        `Contribution generated, and transcript written to ${transcriptFilepath}.\n` +
+            `Please run the 'attest' command next.`
+    )
 
     return 0
 }

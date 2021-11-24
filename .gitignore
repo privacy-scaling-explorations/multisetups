@@ -102,3 +102,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Snapshot of git state to embed within Docker image
+.gitsnapshot/
