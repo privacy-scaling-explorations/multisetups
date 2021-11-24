@@ -69,7 +69,7 @@ Saving file(s) to /ceremony/old
 To contribute:
 
 ```
-docker-compose exec multisetups node build/index.js contribute -d /ceremony/old -n /ceremony/new
+docker-compose exec multisetups node build/index.js contribute -d /ceremony/old -o /ceremony/new
 
 Contribution generated, and transcript written to /ceremony/new/transcript.1.txt.
 Please run the 'attest' command next.
@@ -132,7 +132,7 @@ Next, perform the contribution. This may take a long time. It should ideally be
 done on an airgapped computer.
 
 ```
-node build/index.js contribute -m <MULTIHASH> -d ./old -n ./new
+node build/index.js contribute -m <MULTIHASH> -d ./old -o ./new
 ```
 
 Generate an attestation file:
