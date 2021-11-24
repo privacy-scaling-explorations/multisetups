@@ -67,7 +67,7 @@ const verify = async (
 
     console.log('You should run the following commands to verify the contribution:')
     for (const c of contribs) {
-        const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey verify <R1CS_FILE> ${ptauFile} ${c}`
+        const cmd = `node ./node_modules/.bin/snarkjs zkey verify <R1CS_FILE> ${ptauFile} ${c}`
         console.log(cmd)
     }
 

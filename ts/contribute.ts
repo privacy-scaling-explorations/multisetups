@@ -105,7 +105,7 @@ const contribute = async (
 
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
-        const cmd = `node ./node_modules/snarkjs/build/cli.cjs zkey contribute ${o} ${n}`
+        const cmd = `node ./node_modules/.bin/snarkjs zkey contribute ${o} ${n}`
         let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
