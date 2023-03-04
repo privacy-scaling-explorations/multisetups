@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+const SUCCINCT_S3_BUCKET = 's3://succinct-telepathy-trusted-setup/';
+
 const FORMAT = '<name>.<num>.zkey'
 
 const parseZkeyFilename = (file: string) => {
@@ -82,4 +84,5 @@ export {
     validateZkeyDir,
     parseZkeyFilename,
     countDirents,
+    SUCCINCT_S3_BUCKET
 }

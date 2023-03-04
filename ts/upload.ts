@@ -7,6 +7,7 @@ import * as path from 'path'
 import {
     FORMAT,
     countDirents,
+    SUCCINCT_S3_BUCKET
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -44,16 +45,13 @@ const upload = async (
     }
 
     // Upload files
-    const cmd = `ipfs add --pin -Q -r ${dirname}`
+    const cmd = `aws s3 cp --recursive ${dirname} ${SUCCINCT_S3_BUCKET}/${dirname}`
     const out = shelljs.exec(cmd, { silent: true })
     if (out.code !== 0 || out.stderr) {
-        console.error(`Error: could not add ${dirname} to IPFS.`)
+        console.error(`Error: could not add ${dirname} to ${SUCCINCT_S3_BUCKET}.`)
         console.error(out.stderr)
         return 1
     }
-    const multihash = out.stdout.trim()
-    console.log('Contribution uploaded. Please send this multihash to the coordinator and keep your IPFS node running and connected to the IPFS network.')
-    console.log(multihash)
     return 0
 }
 

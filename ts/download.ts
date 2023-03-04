@@ -7,6 +7,7 @@ import * as path from 'path'
 import {
     validateZkeyDir,
     countDirents,
+    SUCCINCT_S3_BUCKET
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -55,11 +56,11 @@ const download = async (
     }
 
     // Download files
-    const cmd = `ipfs get -o ${dirname} /ipfs/${multihash}`
+    const cmd = `aws s3 cp --recursive ${SUCCINCT_S3_BUCKET}/${dirname} ./${dirname}`
     const out = shelljs.exec(cmd)
 
     if (out.code !== 0) {
-        console.error(`Error: could not download files from /ipfs/${multihash}`)
+        console.error(`Error: could not download files from ${SUCCINCT_S3_BUCKET}/${dirname}`)
         console.error(out.code, out.stderr)
         return 1
     }
