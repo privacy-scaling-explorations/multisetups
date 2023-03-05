@@ -74,6 +74,8 @@ const contribute = async (
         return 1
     }
 
+    console.log("calculating contributions...");
+
     // Perform contributions
     let contribNum = 0
     const contribs: any[] = []

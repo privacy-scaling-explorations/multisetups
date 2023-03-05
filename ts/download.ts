@@ -52,6 +52,8 @@ const download = async (
     const clearCmd = `rm -rf ${WORKSPACE_DIR}/*`;
     const outClearCmd = shelljs.exec(clearCmd, { silent: true });
 
+    console.log("downloading the previous contribution...");
+
     // Download files
     const cmd = `aws s3 cp --recursive ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
     const out = shelljs.exec(cmd, { silent: true })
@@ -67,7 +69,7 @@ const download = async (
         return 1
     }
 
-    console.log(`downloaded previous contribution successfully: ${s3bucket}/${dirname}`)
+    console.log(`successfully downloaded previous contribution: ${s3bucket}/${dirname}`)
 
     return 0
 }
