@@ -52,16 +52,13 @@ const contribute = async (
     const newZkeyDirName = getDirNamePrefix(contributorNum);
     const newDirname = `${WORKSPACE_DIR}/${newZkeyDirName}`;
 
-    console.log("dirname is ", dirname);
-    console.log("newDirname is ", newDirname);
-
     if (!fs.existsSync(newDirname)) {
         fs.mkdirSync(newDirname)
     }
 
     // Clear new directory
     const clearCmd = `rm ${newDirname}/*`;
-    const outClearCmd = shelljs.exec(clearCmd);
+    const outClearCmd = shelljs.exec(clearCmd, { silent: true });
 
     // newDirname must be empty
     const numNewFiles = countDirents(newDirname)
@@ -110,8 +107,6 @@ const contribute = async (
         const cmd = `node ./node_modules/.bin/snarkjs zkey contribute ${o} ${n}`
         let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
-        console.log("cmd is ", cmd);
-        console.log("out is ", out);
         transcript += `${cmd}\n`
         transcript += `${out}\n\n`
     }

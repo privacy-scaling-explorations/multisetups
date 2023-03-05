@@ -65,13 +65,13 @@ const run = async () => {
 
     try {
         if (args.subcommand === 'download') {
-            return (await download(args.contributorNum))
+            return (await download(args.contributorNum, args.s3bucket))
         } else if (args.subcommand === 'contribute') {
             return (await contribute(args.contributorNum, args.entropy))
         } else if (args.subcommand === 'attest') {
             return (await attest(args.template, args.contributorNum))
         } else if (args.subcommand === 'upload') {
-            return (await upload(args.contributorNum, args.contributorHandle))
+            return (await upload(args.contributorNum, args.contributorHandle, args.s3bucket))
         } else if (args.subcommand === 'verify') {
             return (await verify(args.participantNum, args.ptau))
         }

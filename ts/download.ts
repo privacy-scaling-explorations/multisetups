@@ -27,25 +27,37 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
             help: 'The participant number that you received from the coordinator.'
         }
     )
+
+    parser.add_argument(
+        '--s3bucket',
+        {
+            required: true,
+            action: 'store',
+            type: 'str',
+            help: 'The trusted setup s3 bucket',
+            default: SUCCINCT_S3_BUCKET
+        }
+    )
+
 }
 
 const download = async (
-    contributorNum: number
+    contributorNum: number,
+    s3bucket: string,
 ) => {
     // Get the previous contribution directory
     const dirname = getDirName(contributorNum - 1);
-    console.log("dirname is " + dirname);
 
     // Clear the workspace
     const clearCmd = `rm -rf ${WORKSPACE_DIR}/*`;
-    const outClearCmd = shelljs.exec(clearCmd);
+    const outClearCmd = shelljs.exec(clearCmd, { silent: true });
 
     // Download files
-    const cmd = `aws s3 cp --recursive ${SUCCINCT_S3_BUCKET}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    const out = shelljs.exec(cmd)
+    const cmd = `aws s3 cp --recursive ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const out = shelljs.exec(cmd, { silent: true })
 
     if (out.code !== 0) {
-        console.error(`Error: could not download files from ${SUCCINCT_S3_BUCKET}/${dirname}`)
+        console.error(`Error: could not download files from ${s3bucket}/${dirname}`)
         console.error(out.code, out.stderr)
         return 1
     }
@@ -54,6 +66,8 @@ const download = async (
     if (!isZkeyDirValid) {
         return 1
     }
+
+    console.log(`downloaded previous contribution successfully: ${s3bucket}/${dirname}`)
 
     return 0
 }

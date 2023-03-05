@@ -40,11 +40,23 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
         }
     )
 
+    parser.add_argument(
+        '--s3bucket',
+        {
+            required: true,
+            action: 'store',
+            type: 'str',
+            help: 'The trusted setup s3 bucket',
+            default: SUCCINCT_S3_BUCKET
+        }
+    )
+
 }
 
 const upload = async (
     contributorNum: number,
     contributorHandle: string,
+    s3bucket: string
 ) => {
     const dirname = `${WORKSPACE_DIR}/${getDirNamePrefix(contributorNum)}`;
 
@@ -63,13 +75,16 @@ const upload = async (
     const s3dirname = generateDirName(contributorNum, contributorHandle)
 
     // Upload files
-    const cmd = `aws s3 cp --recursive ${dirname} ${SUCCINCT_S3_BUCKET}/${s3dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const cmd = `aws s3 cp --recursive ${dirname} ${s3bucket}/${s3dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
     const out = shelljs.exec(cmd, { silent: true })
     if (out.code !== 0 || out.stderr) {
-        console.error(`Error: could not add ${dirname} to ${SUCCINCT_S3_BUCKET}/${s3dirname}.`)
+        console.error(`Error: could not add ${dirname} to ${s3bucket}/${s3dirname}.`)
         console.error(out.stderr)
         return 1
     }
+
+    console.log(`successfully updated previous contribution: ${s3bucket}/${s3dirname}`)
+
     return 0
 }
 

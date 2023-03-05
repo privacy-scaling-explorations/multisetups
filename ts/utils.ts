@@ -100,7 +100,7 @@ const getDirName = (
 ): string => {
     const dirNamePrefix = getDirNamePrefix(contributorNum);
     const cmd = `aws s3 ls ${SUCCINCT_S3_BUCKET}/${dirNamePrefix} | sed 's/ *PRE //g'`
-    const out = shelljs.exec(cmd)
+    const out = shelljs.exec(cmd, { silent: true })
 
     if (out.code !== 0) {
         console.error(`Error: could not get dirname from prefix of ${SUCCINCT_S3_BUCKET}/${dirNamePrefix}`)
