@@ -64,20 +64,16 @@ const run = async () => {
     }
 
     try {
-        if (args.subcommand === 'init') {
-            //const config = loadConfig(args.config)
-            //return (await init(config))
-            return (await init(args.dir))
-        } else if (args.subcommand === 'download') {
-            return (await download(args.multihash, args.dir))
+        if (args.subcommand === 'download') {
+            return (await download(args.contributorNum))
         } else if (args.subcommand === 'contribute') {
-            return (await contribute(args.dir, args['new'], args.entropy))
+            return (await contribute(args.contributorNum, args.entropy))
         } else if (args.subcommand === 'attest') {
-            return (await attest(args.template, args.dir))
+            return (await attest(args.template, args.contributorNum))
         } else if (args.subcommand === 'upload') {
-            return (await upload(args.dir))
+            return (await upload(args.contributorNum, args.contributorHandle))
         } else if (args.subcommand === 'verify') {
-            return (await verify(args.dir, args.ptau))
+            return (await verify(args.participantNum, args.ptau))
         }
     } catch (e) {
         console.error(e)

@@ -8,6 +8,7 @@ import {
     FORMAT,
     validateZkeyDir,
     parseZkeyFilename,
+    getDirName
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -17,14 +18,12 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-d',
-        '--dir',
+        '--participantNum',
         {
             required: true,
             action: 'store',
-            type: 'str',
-            help: 'The directory that contains the .zkey files to verify. Each .zkey ' +
-                'file must follow this naming scheme: ' + FORMAT
+            type: 'int',
+            help: 'The participant number that you received from the coordinator.'
         }
     )
 
@@ -41,9 +40,11 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
 }
 
 const verify = async (
-    dirname: string,
+    participantNum: number,
     ptauFile: string,
 ) => {
+    const dirname = getDirName(participantNum);
+
     // The directory must not be empty
     let numFiles = 0
     for (const file of fs.readdirSync(dirname)) {

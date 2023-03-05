@@ -1,7 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as shelljs from 'shelljs'
 
-const SUCCINCT_S3_BUCKET = 's3://succinct-telepathy-trusted-setup/';
+const SUCCINCT_S3_BUCKET = 's3://succinct-telepathy-trusted-setup';
+const WORKSPACE_DIR = '/workspace';
 
 const FORMAT = '<name>.<num>.zkey'
 
@@ -78,11 +80,47 @@ const countDirents = (
     return numFiles
 }
 
+const getDirNamePrefix = (
+    contributorNum: number,
+): string => {
+    return String(contributorNum).padStart(4, '0').trim();
+}
+
+const generateDirName = (
+    contributorNum: number,
+    contributerHandle: string
+): string => {
+    const dirNamePrefix = getDirNamePrefix(contributorNum);
+    const dirName = `${dirNamePrefix}-${contributerHandle}`;
+    return dirName;
+}
+
+const getDirName = (
+    contributorNum: number,
+): string => {
+    const dirNamePrefix = getDirNamePrefix(contributorNum);
+    const cmd = `aws s3 ls ${SUCCINCT_S3_BUCKET}/${dirNamePrefix} | sed 's/ *PRE //g'`
+    const out = shelljs.exec(cmd)
+
+    if (out.code !== 0) {
+        console.error(`Error: could not get dirname from prefix of ${SUCCINCT_S3_BUCKET}/${dirNamePrefix}`)
+        console.error(out.code, out.stderr)
+        return ""
+    }
+
+    const dirName = out.stdout.trim();
+    return dirName;
+}
+
 export {
     FORMAT,
+    generateDirName,
+    getDirName,
+    getDirNamePrefix,
     getZkeyFiles,
     validateZkeyDir,
     parseZkeyFilename,
     countDirents,
-    SUCCINCT_S3_BUCKET
+    SUCCINCT_S3_BUCKET,
+    WORKSPACE_DIR
 }

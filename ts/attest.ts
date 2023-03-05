@@ -8,6 +8,8 @@ import * as Handlebars from 'handlebars'
 import {
     getZkeyFiles,
     countDirents,
+    getDirNamePrefix,
+    WORKSPACE_DIR
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -17,7 +19,6 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-t',
         '--template',
         {
             required: true,
@@ -28,21 +29,23 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-d',
-        '--dir',
+        '--contributorNum',
         {
             required: true,
             action: 'store',
-            type: 'str',
-            help: 'The directory to write the attestation to.'
+            type: 'int',
+            help: 'The participant number that you received from the coordinator.'
         }
     )
+
 }
 
 const attest = async (
     templateFile: string,
-    dirname: string,
+    contributorNum: number
 ) => {
+    const dirname = `${WORKSPACE_DIR}/${getDirNamePrefix(contributorNum)}`;
+
     if (!fs.existsSync(dirname)) {
         fs.mkdirSync(dirname)
     }
@@ -55,13 +58,6 @@ const attest = async (
     }
 
     const zkeys = getZkeyFiles(dirname)
-    if (zkeys.length !== 1) {
-        console.error(
-            `Error: found ${zkeys.length} zkeys in ${dirname}. ` +
-                `There must only be one.`
-        )
-        return 1
-    }
     const contribNum = zkeys[0].num
 
     const outFile = `${dirname}/attestation.${contribNum}.md`
@@ -75,19 +71,26 @@ const attest = async (
         console.error(`Error: ${transcriptFile} doesn't exist; aborting.`)
         return 1
     }
-
+    
+    console.log("transcriptFile: ", transcriptFile);
     const template = fs.readFileSync(templateFile).toString()
     const compiled = Handlebars.compile(template)
 
     const now = new Date()
+
+    console.log("going to run compiled");
     const attestation = compiled({
-        ceremony: process.env.CEREMONY,
+        //ceremony: process.env.CEREMONY,
+        ceremony: "test ceremony",
         date: now.toDateString(),
         time: now.toTimeString(),
         repo: {
-            head: process.env.GIT_HEAD,
-            head_name: process.env.GIT_HEAD_NAME,
-            upstream: process.env.GIT_UPSTREAM,
+            head: 'test git head',
+            head_name: 'test git head name',
+            upstream: 'test git upstream',
+            //head: process.env.GIT_HEAD,
+            //head_name: process.env.GIT_HEAD_NAME,
+            //upstream: process.env.GIT_UPSTREAM,
         },
         os: {
             arch: os.arch(),
@@ -115,6 +118,7 @@ const attest = async (
 }
 
 const getTranscript = (transcriptFile: string): string => {
+    console.log("going to read transcriptFile: ", transcriptFile);
     return fs.readFileSync(transcriptFile)
         .toString()
         .trim()
@@ -122,6 +126,7 @@ const getTranscript = (transcriptFile: string): string => {
 }
 
 const getCpuBugs = (): string => {
+    console.log("going to run getCpuBugs");
     const bugs = shelljs.exec(`grep '^bugs' /proc/cpuinfo | sort -u`, { silent: true })
     return bugs.replace(/^bugs\s+:\s+/, '').trim()
 }

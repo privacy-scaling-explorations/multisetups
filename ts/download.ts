@@ -7,7 +7,9 @@ import * as path from 'path'
 import {
     validateZkeyDir,
     countDirents,
-    SUCCINCT_S3_BUCKET
+    SUCCINCT_S3_BUCKET,
+    getDirName,
+    WORKSPACE_DIR
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -17,46 +19,29 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-m',
-        '--multihash',
+        '--contributorNum',
         {
             required: true,
             action: 'store',
-            type: 'str',
-            help: 'The multihash that you received from the coordinator.'
+            type: 'int',
+            help: 'The participant number that you received from the coordinator.'
         }
     )
-
-    parser.add_argument(
-        '-d',
-        '--dir',
-        {
-            required: true,
-            action: 'store',
-            type: 'str',
-            help: 'The directory to store the downloaded .zkey files.',
-        }
-    )
-
 }
 
 const download = async (
-    multihash: string,
-    dirname: string,
+    contributorNum: number
 ) => {
-    if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname)
-    }
+    // Get the previous contribution directory
+    const dirname = getDirName(contributorNum - 1);
+    console.log("dirname is " + dirname);
 
-    // The directory must be empty
-    const numFiles = countDirents(dirname)
-    if (numFiles > 0) {
-        console.error(`Error: ${dirname} should be empty`)
-        return 1
-    }
+    // Clear the workspace
+    const clearCmd = `rm -rf ${WORKSPACE_DIR}/*`;
+    const outClearCmd = shelljs.exec(clearCmd);
 
     // Download files
-    const cmd = `aws s3 cp --recursive ${SUCCINCT_S3_BUCKET}/${dirname} ./${dirname}`
+    const cmd = `aws s3 cp --recursive ${SUCCINCT_S3_BUCKET}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
     const out = shelljs.exec(cmd)
 
     if (out.code !== 0) {
@@ -65,7 +50,7 @@ const download = async (
         return 1
     }
 
-    const isZkeyDirValid = validateZkeyDir(dirname) === 0
+    const isZkeyDirValid = validateZkeyDir(`${WORKSPACE_DIR}/${dirname}`) === 0
     if (!isZkeyDirValid) {
         return 1
     }

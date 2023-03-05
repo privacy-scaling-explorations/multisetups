@@ -7,7 +7,10 @@ import * as path from 'path'
 import {
     FORMAT,
     parseZkeyFilename,
-    countDirents
+    countDirents,
+    getDirName,
+    getDirNamePrefix,
+    WORKSPACE_DIR
 } from './utils'
 
 const configureSubparsers = (subparsers: ArgumentParser) => {
@@ -17,30 +20,16 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
     )
 
     parser.add_argument(
-        '-d',
-        '--dir',
+        '--contributorNum',
         {
             required: true,
             action: 'store',
-            type: 'str',
-            help: 'The directory that contains the .zkey files. Each .zkey ' +
-                'file must follow this naming scheme: ' + FORMAT
+            type: 'int',
+            help: 'The participant number that you received from the coordinator.'
         }
     )
 
     parser.add_argument(
-        '-n',
-        '--new',
-        {
-            required: true,
-            action: 'store',
-            type: 'str',
-            help: 'The directory to store the new .zkey files.',
-        }
-    )
-
-    parser.add_argument(
-        '-e',
         '--entropy',
         {
             required: false,
@@ -53,13 +42,26 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
 }
 
 const contribute = async (
-    dirname: string,
-    newDirname: string,
+    contributorNum: number,
     entropy: string,
 ) => {
+    // Get previous contribution directory
+    const prevZkeyDirName = getDirName(contributorNum - 1);
+    const dirname = `${WORKSPACE_DIR}/${prevZkeyDirName}`;
+    // Get new contribution directory
+    const newZkeyDirName = getDirNamePrefix(contributorNum);
+    const newDirname = `${WORKSPACE_DIR}/${newZkeyDirName}`;
+
+    console.log("dirname is ", dirname);
+    console.log("newDirname is ", newDirname);
+
     if (!fs.existsSync(newDirname)) {
         fs.mkdirSync(newDirname)
     }
+
+    // Clear new directory
+    const clearCmd = `rm ${newDirname}/*`;
+    const outClearCmd = shelljs.exec(clearCmd);
 
     // newDirname must be empty
     const numNewFiles = countDirents(newDirname)
@@ -108,6 +110,8 @@ const contribute = async (
         const cmd = `node ./node_modules/.bin/snarkjs zkey contribute ${o} ${n}`
         let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
+        console.log("cmd is ", cmd);
+        console.log("out is ", out);
         transcript += `${cmd}\n`
         transcript += `${out}\n\n`
     }
