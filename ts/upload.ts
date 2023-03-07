@@ -1,14 +1,10 @@
 import { ArgumentParser } from 'argparse'
-import * as crypto from 'crypto'
 import * as shelljs from 'shelljs'
 import * as fs from 'fs'
-import * as path from 'path'
 
 import {
-    FORMAT,
     countDirents,
     SUCCINCT_S3_BUCKET,
-    getDirName,
     WORKSPACE_DIR,
     generateDirName,
     getDirNamePrefix

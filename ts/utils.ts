@@ -4,8 +4,9 @@ import * as shelljs from 'shelljs'
 
 const SUCCINCT_S3_BUCKET = 's3://succinct-telepathy-trusted-setup';
 const WORKSPACE_DIR = '/workspace';
-
+const PTAU_FILENAME = 'powersOfTau28_hez_final_27.ptau';
 const FORMAT = '<name>.<num>.zkey'
+const ZKEY_NAMES = new Set<string>(['step', 'rotate'])
 
 const parseZkeyFilename = (file: string) => {
     const r = /^(.+)\.(\d+)\.zkey$/
@@ -53,17 +54,21 @@ const validateZkeyDir = (
     }
 
     // Validate zkey filenames
-    const uniqNames = new Set()
+    const uniqNames = new Set<string>()
     for (const z of zkeyFiles) {
         uniqNames.add(z.name)
-        //if (z.num !== 0) {
-            //console.log(z)
-            //console.error(`Error: all .zkey files in ${dirname} should have the correct format: ${FORMAT}`)
-            //return 1
-        //}
     }
+
     if (uniqNames.size !== zkeyFiles.length) {
         console.error(`The .zkey file names should be unique.`)
+        return 1
+    }
+
+    const eqSet = (xs, ys) =>
+        xs.size === ys.size &&
+        [...xs].every((x) => ys.has(x));
+
+    if (!eqSet(uniqNames, ZKEY_NAMES)) {
         return 1
     }
 
@@ -121,6 +126,8 @@ export {
     validateZkeyDir,
     parseZkeyFilename,
     countDirents,
+    PTAU_FILENAME,
     SUCCINCT_S3_BUCKET,
-    WORKSPACE_DIR
+    WORKSPACE_DIR,
+    ZKEY_NAMES
 }
