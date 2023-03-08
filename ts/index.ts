@@ -26,8 +26,13 @@ import {
 
 import {
     verify_contribution,
-    configureSubparsers as configureSubparsersForVerify,
+    configureSubparsers as configureSubparsersForVerifyContribution,
 } from './verify_contribution'
+
+import {
+    verify_initial_zkeys,
+    configureSubparsers as configureSubparsersForVerifyInitialZKeys,
+} from './verify_initial_zkeys'
 
 import {
     upload,
@@ -50,7 +55,8 @@ const run = async () => {
     configureSubparsersForUpload(subparsers)
     configureSubparsersForContribute(subparsers)
     configureSubparsersForAttest(subparsers)
-    configureSubparsersForVerify(subparsers)
+    configureSubparsersForVerifyContribution(subparsers)
+    configureSubparsersForVerifyInitialZKeys(subparsers)
 
     const args = parser.parse_args()
 
@@ -74,6 +80,8 @@ const run = async () => {
             return (await upload(args.contributorNum, args.contributorHandle, args.s3bucket))
         } else if (args.subcommand === 'verify_contribution') {
             return (await verify_contribution(args.participantNum, args.ptau))
+        } else if (args.subcommand === 'verify_initial_zkeys') {
+            return (await verify_initial_zkeys(args.s3bucket))
         }
     } catch (e) {
         console.error(e)
