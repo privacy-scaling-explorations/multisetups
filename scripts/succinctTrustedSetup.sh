@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-_usage() { echo "Usage: $0 [--entropy] [--contributorHandle ] [--test] " 1>&2; exit 1; }
+_usage() { echo "Usage: $0 [--entropy] [--contributorHandle] [--test] " 1>&2; exit 1; }
 
 # Default value for the command line options
 export LC_ALL=c
@@ -40,7 +40,8 @@ else
 fi
 
 # Get my contribution number
-LAST_CONTRIBUTOR_NUM=$(aws s3 ls $S3BUCKET/0 | sed -En 's/                           PRE //p' | sed -En 's/-.*\/$//p' | sort -n | tail -1)
+LAST_CONTRIBUTION_CMD="aws s3 ls $S3BUCKET/0 | sed -En 's/ *PRE //p' | sed -En 's/-.*\/$//p' | sort -n | tail -1"
+LAST_CONTRIBUTION_NUM=$(eval "$LAST_CONTRIBUTION_CMD")
 MY_CONTRIBUTOR_NUM=$((LAST_CONTRIBUTION_NUM + 1))
 
 node build/index.js download --contributorNum $MY_CONTRIBUTOR_NUM --s3bucket $S3BUCKET
