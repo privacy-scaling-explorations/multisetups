@@ -55,7 +55,7 @@ const verify_initial_zkeys = async (
         return 1
     }
 
-    const initialDirName = getDirName(0);
+    const initialDirName = getDirName(0, s3bucket);
     const initialZkeyFiles = getZkeyFiles(initialDirName)
 
     for (const zkeyName of ZKEY_NAMES.values()) {

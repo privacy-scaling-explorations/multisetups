@@ -73,7 +73,7 @@ const upload = async (
     // Generate the S3 dirname
     const s3dirname = generateDirName(contributorNum, contributorHandle)
 
-    console.log("uploading your contribution...");
+    console.log(`uploading your contribution ${s3dirname} ...`);
 
     // Upload files
     const cmd = `aws s3 cp --recursive ${dirname} ${s3bucket}/${s3dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`

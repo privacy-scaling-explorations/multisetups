@@ -102,13 +102,14 @@ const generateDirName = (
 
 const getDirName = (
     contributorNum: number,
+    s3bucket: string
 ): string => {
     const dirNamePrefix = getDirNamePrefix(contributorNum);
-    const cmd = `aws s3 ls ${SUCCINCT_S3_BUCKET}/${dirNamePrefix} | sed 's/ *PRE //g'`
+    const cmd = `aws s3 ls ${s3bucket}/${dirNamePrefix} | sed 's/ *PRE //g'`
     const out = shelljs.exec(cmd, { silent: true })
 
     if (out.code !== 0) {
-        console.error(`Error: could not get dirname from prefix of ${SUCCINCT_S3_BUCKET}/${dirNamePrefix}`)
+        console.error(`Error: could not get dirname from prefix of ${s3bucket}/${dirNamePrefix}`)
         console.error(out.code, out.stderr)
         return ""
     }

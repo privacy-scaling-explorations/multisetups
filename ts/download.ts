@@ -42,13 +42,13 @@ const download = async (
     s3bucket: string,
 ) => {
     // Get the previous contribution directory
-    const dirname = getDirName(contributorNum - 1);
+    const dirname = getDirName(contributorNum - 1, s3bucket);
 
     // Clear the workspace
     const clearCmd = `rm -rf ${WORKSPACE_DIR}/*`;
     const outClearCmd = shelljs.exec(clearCmd, { silent: true });
 
-    console.log("downloading the previous contribution...");
+    console.log(`downloading the previous contribution ${dirname} ...`);
 
     // Download files
     const cmd = `aws s3 sync ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`

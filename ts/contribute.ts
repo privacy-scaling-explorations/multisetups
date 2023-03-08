@@ -45,7 +45,8 @@ const contribute = async (
     entropy: string,
 ) => {
     // Get previous contribution directory
-    const prevZkeyDirName = getDirName(contributorNum - 1);
+    const prevZkeyDirNamePrefix = getDirNamePrefix(contributorNum - 1);
+    const prevZkeyDirName = fs.readdirSync(WORKSPACE_DIR).filter((f) => f.startsWith(prevZkeyDirNamePrefix)).sort().reverse()[0];
     const dirname = `${WORKSPACE_DIR}/${prevZkeyDirName}`;
     // Get new contribution directory
     const newZkeyDirName = getDirNamePrefix(contributorNum);
