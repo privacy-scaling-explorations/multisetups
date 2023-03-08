@@ -6,11 +6,7 @@ RUN unzip awscliv2.zip
 RUN ./aws/install
 COPY awsconfig /root/.aws
 
+# Build the multisetups package
 WORKDIR /multisetups
 COPY . /multisetups/
 RUN npm i
-
-ENV CEREMONY ${CEREMONY}
-ENV GIT_HEAD ${GIT_HEAD}
-ENV GIT_HEAD_NAME ${GIT_HEAD_NAME}
-ENV GIT_UPSTREAM ${GIT_UPSTREAM}
