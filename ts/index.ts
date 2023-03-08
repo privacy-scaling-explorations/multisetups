@@ -25,9 +25,9 @@ import {
 } from './attest'
 
 import {
-    verify,
+    verify_contribution,
     configureSubparsers as configureSubparsersForVerify,
-} from './verify'
+} from './verify_contribution'
 
 import {
     upload,
@@ -72,8 +72,8 @@ const run = async () => {
             return (await attest(args.template, args.contributorNum))
         } else if (args.subcommand === 'upload') {
             return (await upload(args.contributorNum, args.contributorHandle, args.s3bucket))
-        } else if (args.subcommand === 'verify') {
-            return (await verify(args.participantNum, args.ptau))
+        } else if (args.subcommand === 'verify_contribution') {
+            return (await verify_contribution(args.participantNum, args.ptau))
         }
     } catch (e) {
         console.error(e)

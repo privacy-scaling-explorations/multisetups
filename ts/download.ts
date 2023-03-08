@@ -1,12 +1,8 @@
 import { ArgumentParser } from 'argparse'
-import * as crypto from 'crypto'
 import * as shelljs from 'shelljs'
-import * as fs from 'fs'
-import * as path from 'path'
 
 import {
     validateZkeyDir,
-    countDirents,
     SUCCINCT_S3_BUCKET,
     getDirName,
     WORKSPACE_DIR
@@ -55,7 +51,7 @@ const download = async (
     console.log("downloading the previous contribution...");
 
     // Download files
-    const cmd = `aws s3 cp --recursive ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const cmd = `aws s3 sync ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
     const out = shelljs.exec(cmd, { silent: true })
 
     if (out.code !== 0) {
