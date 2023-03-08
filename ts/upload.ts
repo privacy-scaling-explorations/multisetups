@@ -90,7 +90,7 @@ const upload = async (
     const transcript = fs.readFileSync(transcriptFilepath, 'utf-8');
     const transcriptHash = crypto.createHash('sha256').update(transcript).digest('hex'); 
 
-    const tweet = clc.bold("Here is my attestation for the Succinct Telepathy trusted setup.\n\n#Succinct #Telepathy @SuccinctLabs 🔥\n\n0x" + transcriptHash)
+    const tweet = clc.bold("Here is my attestation for the Succinct trusted setup.\n\n#Succinct @SuccinctLabs 🔥\n\n0x" + transcriptHash)
     const tweetUrl = clc.underline("https://twitter.com/compose/tweet")
     console.log(`Please post a public attestation of your contribution by tweeting (${tweetUrl}) the following message:\n\n${tweet}`)
 
