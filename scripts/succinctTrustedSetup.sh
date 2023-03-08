@@ -45,5 +45,11 @@ LAST_CONTRIBUTION_NUM=$(eval "$LAST_CONTRIBUTION_CMD")
 MY_CONTRIBUTOR_NUM=$((LAST_CONTRIBUTION_NUM + 1))
 
 node build/index.js download --contributorNum $MY_CONTRIBUTOR_NUM --s3bucket $S3BUCKET
+
+echo "\n\n\n\n"
+sleep 3
 node build/index.js contribute --contributorNum $MY_CONTRIBUTOR_NUM --entropy $ENTROPY
+
+echo "\n\n\n\n"
+sleep 3
 node build/index.js upload --contributorNum $MY_CONTRIBUTOR_NUM --contributorHandle $CONTRIBUTOR_HANDLE --s3bucket $S3BUCKET
