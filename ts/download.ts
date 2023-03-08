@@ -52,7 +52,7 @@ const download = async (
 
     // Download files
     const cmd = `aws s3 sync ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    const out = shelljs.exec(cmd, { silent: true })
+    const out = shelljs.exec(cmd, { silent: false })
 
     if (out.code !== 0) {
         console.error(`Error: could not download files from ${s3bucket}/${dirname}`)

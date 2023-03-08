@@ -103,7 +103,19 @@ const contribute = async (
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
         const cmd = `node ./node_modules/.bin/snarkjs zkey contribute -v ${o} ${n}`
-        let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
+        console.log("Adding contribution to " + o);
+        let out = ""
+        let childprocess = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { async:true, silent: true })
+
+        childprocess.stdout.on('data', function(data: string) {
+            console.log(data)
+            out += data
+        });
+
+        await new Promise( (resolve) => {
+            childprocess.on('close', resolve)
+        })
+
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
         transcript += `${out}\n\n`

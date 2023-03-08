@@ -77,7 +77,7 @@ const upload = async (
 
     // Upload files
     const cmd = `aws s3 cp --recursive ${dirname} ${s3bucket}/${s3dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    const out = shelljs.exec(cmd, { silent: true })
+    const out = shelljs.exec(cmd, { silent: false })
     if (out.code !== 0 || out.stderr) {
         console.error(`Error: could not add ${dirname} to ${s3bucket}/${s3dirname}.`)
         console.error(out.stderr)
