@@ -90,12 +90,8 @@ const contribute = async (
                 original: file,
                 'new': newName,
             })
-        //} else {
-            //console.error(`Error: unexpected file ${file}`)
-            //return 1
         }
     }
-
     let transcript = ''
 
     let currentEntropy = entropy + crypto.randomBytes(128).toString('hex')

@@ -1,6 +1,8 @@
 import { ArgumentParser } from 'argparse'
 import * as shelljs from 'shelljs'
 import * as fs from 'fs'
+import * as path from 'path'
+import * as crypto from 'crypto'
 
 import {
     countDirents,
@@ -81,7 +83,15 @@ const upload = async (
         return 1
     }
 
-    console.log(`successfully updated previous contribution: ${s3bucket}/${s3dirname}`)
+    console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
+
+    const transcriptFilepath = path.join(dirname, `transcript.${contributorNum}.txt`)
+    const transcript = fs.readFileSync(transcriptFilepath, 'utf-8');
+    const transcriptHash = crypto.createHash('sha256').update(transcript).digest('hex'); 
+
+    const tweet = "Here is my attestation for the Succinct Telepathy trusted setup.\n\n#Succinct #Telepathy @SuccinctLabs\n\n" + transcriptHash
+
+    console.log("Please post a public attestation of your contribution by tweeting the following message\n\n" + tweet)
 
     return 0
 }
