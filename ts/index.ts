@@ -5,11 +5,6 @@ import * as yaml from 'js-yaml'
 import * as fs from 'fs'
 
 import {
-    init,
-    configureSubparsers as configureSubparsersForInit,
-} from './init'
-
-import {
     download,
     configureSubparsers as configureSubparsersForDownload,
 } from './download'
@@ -18,11 +13,6 @@ import {
     contribute,
     configureSubparsers as configureSubparsersForContribute,
 } from './contribute'
-
-import {
-    attest,
-    configureSubparsers as configureSubparsersForAttest,
-} from './attest'
 
 import {
     verify_contribution,
@@ -50,11 +40,9 @@ const run = async () => {
         required: true,
     })
 
-    configureSubparsersForInit(subparsers)
     configureSubparsersForDownload(subparsers)
     configureSubparsersForUpload(subparsers)
     configureSubparsersForContribute(subparsers)
-    configureSubparsersForAttest(subparsers)
     configureSubparsersForVerifyContribution(subparsers)
     configureSubparsersForVerifyInitialZKeys(subparsers)
 
@@ -74,8 +62,6 @@ const run = async () => {
             return (await download(args.contributorNum, args.s3bucket))
         } else if (args.subcommand === 'contribute') {
             return (await contribute(args.contributorNum, args.entropy))
-        } else if (args.subcommand === 'attest') {
-            return (await attest(args.template, args.contributorNum))
         } else if (args.subcommand === 'upload') {
             return (await upload(args.contributorNum, args.contributorHandle, args.s3bucket))
         } else if (args.subcommand === 'verify_contribution') {

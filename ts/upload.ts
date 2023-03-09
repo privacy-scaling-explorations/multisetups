@@ -1,6 +1,9 @@
 import { ArgumentParser } from 'argparse'
 import * as shelljs from 'shelljs'
 import * as fs from 'fs'
+import * as path from 'path'
+import * as crypto from 'crypto'
+import * as clc from 'cli-color'
 
 import {
     countDirents,
@@ -70,18 +73,26 @@ const upload = async (
     // Generate the S3 dirname
     const s3dirname = generateDirName(contributorNum, contributorHandle)
 
-    console.log("uploading your contribution...");
+    console.log(`uploading your contribution ${s3dirname} ...`);
 
     // Upload files
     const cmd = `aws s3 cp --recursive ${dirname} ${s3bucket}/${s3dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    const out = shelljs.exec(cmd, { silent: true })
+    const out = shelljs.exec(cmd, { silent: false })
     if (out.code !== 0 || out.stderr) {
         console.error(`Error: could not add ${dirname} to ${s3bucket}/${s3dirname}.`)
         console.error(out.stderr)
         return 1
     }
 
-    console.log(`successfully updated previous contribution: ${s3bucket}/${s3dirname}`)
+    console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
+
+    const transcriptFilepath = path.join(dirname, `transcript.${contributorNum}.txt`)
+    const transcript = fs.readFileSync(transcriptFilepath, 'utf-8');
+    const transcriptHash = crypto.createHash('sha256').update(transcript).digest('hex'); 
+
+    const tweet = clc.bold("Here is my attestation for the Succinct trusted setup.\n\n#Succinct @SuccinctLabs 🔥\n\n0x" + transcriptHash)
+    const tweetUrl = clc.underline("https://twitter.com/compose/tweet")
+    console.log(`\n\n\n\nPlease post a public attestation of your contribution by tweeting (${tweetUrl}) the following message:\n\n${tweet}`)
 
     return 0
 }

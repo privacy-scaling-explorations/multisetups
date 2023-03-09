@@ -45,7 +45,8 @@ const contribute = async (
     entropy: string,
 ) => {
     // Get previous contribution directory
-    const prevZkeyDirName = getDirName(contributorNum - 1);
+    const prevZkeyDirNamePrefix = getDirNamePrefix(contributorNum - 1);
+    const prevZkeyDirName = fs.readdirSync(WORKSPACE_DIR).filter((f) => f.startsWith(prevZkeyDirNamePrefix)).sort().reverse()[0];
     const dirname = `${WORKSPACE_DIR}/${prevZkeyDirName}`;
     // Get new contribution directory
     const newZkeyDirName = getDirNamePrefix(contributorNum);
@@ -90,12 +91,8 @@ const contribute = async (
                 original: file,
                 'new': newName,
             })
-        //} else {
-            //console.error(`Error: unexpected file ${file}`)
-            //return 1
         }
     }
-
     let transcript = ''
 
     let currentEntropy = entropy + crypto.randomBytes(128).toString('hex')
@@ -105,8 +102,27 @@ const contribute = async (
 
         const o = path.join(dirname, c.original)
         const n = path.join(newDirname, c['new'])
-        const cmd = `node ./node_modules/.bin/snarkjs zkey contribute ${o} ${n}`
-        let out = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { silent: true })
+        console.log("Adding contribution to " + o);
+        await new Promise(f => setTimeout(f, 3000));
+
+        let out = ""
+        const cmd = `node ./node_modules/.bin/snarkjs zkey contribute -v ${o} ${n}`
+        let childprocess = shelljs.exec(`echo ${currentEntropy} | ${cmd}`, { async:true, silent: true })
+
+        childprocess.stdout.on('data', function(data: string) {
+            if (!data.includes("Enter a random text")) {
+                console.log(data)
+            }
+
+            if (!data.includes("DEBUG")) {
+                out += data
+            }
+        });
+
+        await new Promise( (resolve) => {
+            childprocess.on('close', resolve)
+        })
+
         out = out.replace(/Enter a random text\. \(Entropy\): /, '$&\n')
         transcript += `${cmd}\n`
         transcript += `${out}\n\n`
@@ -115,8 +131,7 @@ const contribute = async (
     const transcriptFilepath = path.join(newDirname, `transcript.${contribNum}.txt`)
     fs.writeFileSync(transcriptFilepath, transcript.trim() + '\n')
     console.log(
-        `Contribution generated, and transcript written to ${transcriptFilepath}.\n` +
-            `Please run the 'attest' command next.`
+        `Contribution generated, and transcript written to ${transcriptFilepath}.`
     )
 
     return 0

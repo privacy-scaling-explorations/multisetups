@@ -59,10 +59,10 @@ const verify_contribution = async (
         return 1
     }
 
-    const contributionDirname = getDirName(contributorNum);
+    const contributionDirname = getDirName(contributorNum, s3bucket);
     const contributionFiles = getZkeyFiles(contributionDirname)
 
-    const initialDirName = getDirName(0);
+    const initialDirName = getDirName(0, s3bucket);
     const initialZkeyFiles = getZkeyFiles(initialDirName)
 
     // At this point, we know that the downloaded directories each has a STEP and ROTATE zkey file.
