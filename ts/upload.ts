@@ -86,13 +86,10 @@ const upload = async (
 
     console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
 
-    const transcriptFilepath = path.join(dirname, `transcript.${contributorNum}.txt`)
-    const transcript = fs.readFileSync(transcriptFilepath, 'utf-8');
-    const transcriptHash = crypto.createHash('sha256').update(transcript).digest('hex'); 
-
-    const tweet = clc.bold("Here is my attestation for the Succinct trusted setup.\n\n#Succinct @SuccinctLabs 🔥\n\n0x" + transcriptHash)
-    const tweetUrl = clc.underline("https://twitter.com/compose/tweet")
-    console.log(`\n\n\n\nPlease post a public attestation of your contribution by tweeting (${tweetUrl}) the following message:\n\n${tweet}`)
+    const transcriptURL = `https://${s3bucket.slice(5)}.s3.amazonaws.com/${s3dirname}/transcript.${contributorNum}.txt`
+    const encodedTranscript = encodeURIComponent(transcriptURL);
+    const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=The%20secret%20is%20safer%20because%20of%20me%20%F0%9F%A4%AB%20Check%20out%20my%20contribution%20here%3A&url=${encodedTranscript}`)
+    console.log(`\n\n\n\nPlease post a public attestation of your contribution by tweeting the following message:\n\n${twitterURl}`)
 
     return 0
 }
