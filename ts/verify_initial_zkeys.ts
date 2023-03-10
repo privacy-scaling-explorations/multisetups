@@ -33,8 +33,7 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
         '--downloadPtau',
         {
             required: false,
-            action: 'store',
-            type: 'bool',
+            action: 'store_true',
             help: 'Download the ptau file',
             default: false
         }
