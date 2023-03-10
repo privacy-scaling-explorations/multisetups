@@ -136,9 +136,10 @@ const upload = async (
 
     console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
 
-    const transcriptURL = `https://${s3bucket.slice(5)}.s3.amazonaws.com/${s3dirname}/transcript.${contributorNum}.txt`
-    const encodedTranscript = encodeURIComponent(transcriptURL);
-    const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=%40SuccinctLabs%F0%9F%A4%AB%0A${rotateContribHash}0A%0A${stepContribHash}`)
+    const tweet = `🤫@SuccinctLabs\n${rotateContribHash}\n\n${stepContribHash}`
+    const encodedTweet = encodeURIComponent(tweet)
+
+    const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=${encodedTweet}`)
     console.log(`\n\n\n\nPlease post a public attestation of your contribution by tweeting the following message:\n\n${twitterURl}`)
 
     return 0
