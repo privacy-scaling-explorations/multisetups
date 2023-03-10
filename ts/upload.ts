@@ -136,7 +136,7 @@ const upload = async (
 
     console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
 
-    const tweet = `🤫@SuccinctLabs\n${rotateContribHash}\n\n${stepContribHash}`
+    const tweet = `🤫@SuccinctLabs\n\n${rotateContribHash}\n\n${stepContribHash}`
     const encodedTweet = encodeURIComponent(tweet)
 
     const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=${encodedTweet}`)
