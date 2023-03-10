@@ -46,7 +46,7 @@ done
 if [ $TEST_MODE = true ]; then
     S3BUCKET="s3://succinct-telepathy-trusted-setup-test"
 else
-    S3BUCKET="s3://succinct-telepathy-trusted-setup"
+    S3BUCKET="s3://succinct-trusted-setup"
 fi
 
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID

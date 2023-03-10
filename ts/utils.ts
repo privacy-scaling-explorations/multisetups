@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as shelljs from 'shelljs'
 
-const SUCCINCT_S3_BUCKET = 's3://succinct-telepathy-trusted-setup';
+const SUCCINCT_S3_BUCKET = 's3://succinct-trusted-setup';
 const WORKSPACE_DIR = '/workspace';
 const PTAU_FILENAME = 'powersOfTau28_hez_final_27.ptau';
 const FORMAT = '<name>.<num>.zkey'
