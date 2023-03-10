@@ -65,9 +65,9 @@ const run = async () => {
         } else if (args.subcommand === 'upload') {
             return (await upload(args.contributorNum, args.contributorHandle, args.s3bucket))
         } else if (args.subcommand === 'verify_contribution') {
-            return (await verify_contribution(args.contributorNum, args.s3bucket))
+            return (await verify_contribution(args.contributorNum, args.s3bucket, args.downloadPtau))
         } else if (args.subcommand === 'verify_initial_zkeys') {
-            return (await verify_initial_zkeys(args.s3bucket))
+            return (await verify_initial_zkeys(args.s3bucket, args.downloadPtau))
         }
     } catch (e) {
         console.error(e)

@@ -38,11 +38,23 @@ const configureSubparsers = (subparsers: ArgumentParser) => {
             default: SUCCINCT_S3_BUCKET
         }
     )
+
+    parser.add_argument(
+        '--downloadPtau',
+        {
+            required: false,
+            action: 'store',
+            type: 'bool',
+            help: 'Download the ptau file',
+            default: false
+        }
+    )
 }
 
 const verify_contribution = async (
     contributorNum: number,
     s3bucket: string,
+    downloadPtau: boolean
 ) => {
 
     // Download the contribution and initial zkey files
@@ -57,9 +69,11 @@ const verify_contribution = async (
     const initialDirNameOut = shelljs.exec(initialDirNameCmd, { silent: false })
     
     // Download the ptau file
-    const downloadPtauCmd = `aws s3 sync ${s3bucket}/ptau/ ${WORKSPACE_DIR}/ptau --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    console.log("downloadPtauCmd is:", downloadPtauCmd);
-    const downloadPtauOut = shelljs.exec(downloadPtauCmd, { silent: false })
+    if (downloadPtau) {
+        const downloadPtauCmd = `wget -O ${WORKSPACE_DIR}/ptau/${PTAU_FILENAME} https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_27.ptau`
+        console.log("downloadPtauCmd is:", downloadPtauCmd);
+        const downloadPtauOut = shelljs.exec(downloadPtauCmd, { silent: false })
+    }
 
     const contributionFiles = getZkeyFiles(`${WORKSPACE_DIR}/${contributionDirname}`)
     const initialZkeyFiles = getZkeyFiles(`${WORKSPACE_DIR}/${initialDirName}`)
