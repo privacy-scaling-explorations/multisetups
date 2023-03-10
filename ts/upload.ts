@@ -84,11 +84,61 @@ const upload = async (
         return 1
     }
 
+    // Parse the blake2 hashes from the transacript file
+    const transcriptPath = path.join(dirname, `transcript.${contributorNum}.txt`)
+    let parsingRotateHash = false
+    let parsingStepHash = false
+
+    // If contrinbHashLinNum != -1, then means we are currently parsing the contribution hash
+    let contribHashLineNum = -1
+
+    let rotateContribHash = '0x'
+    let stepContribHash = '0x'
+
+    fs.readFileSync(transcriptPath, 'utf8').split('\n').forEach((line) => {
+        if (line.includes("rotate") || line.includes("Hasher_2")) {
+            parsingRotateHash = true
+            return
+        } else if (line.includes("step") || line.includes("Hasher_3")) {
+            parsingStepHash = true
+            return
+        }
+
+        if (line.includes('Contribution Hash')) {
+            contribHashLineNum = 0
+            return
+        }
+
+        if (contribHashLineNum != -1) {
+            if (parsingRotateHash) {
+                let re = / /gi
+                rotateContribHash += line.trim().replace(re, '')
+            } else if (parsingStepHash) {
+                let re = / /gi
+                stepContribHash += line.trim().replace(re, '')
+            } else {
+                console.error(`Error: unexpected parsing state: ${line}`)
+                return
+            }
+
+            contribHashLineNum += 1
+            if (contribHashLineNum >= 4) {
+                parsingRotateHash = false
+                parsingStepHash = false
+                contribHashLineNum = -1
+            }
+
+            return
+        }
+
+        return
+    })
+
     console.log(`successfully uploaded contribution: ${s3bucket}/${s3dirname}`)
 
     const transcriptURL = `https://${s3bucket.slice(5)}.s3.amazonaws.com/${s3dirname}/transcript.${contributorNum}.txt`
     const encodedTranscript = encodeURIComponent(transcriptURL);
-    const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=The%20secret%20is%20safer%20because%20of%20me%20%F0%9F%A4%AB%20Check%20out%20my%20contribution%20here%3A&url=${encodedTranscript}`)
+    const twitterURl = clc.bold(`https://twitter.com/intent/tweet?text=The%20secret%20is%20safer%20because%20of%20me%20%F0%9F%A4%AB%20Check%20out%20my%20contribution%20here%3A&url=${encodedTranscript}%0A%0Astep%20contribution%20hash%3A%20${stepContribHash}%0Arotate%20contribution%20hash%3A%20${rotateContribHash}`)
     console.log(`\n\n\n\nPlease post a public attestation of your contribution by tweeting the following message:\n\n${twitterURl}`)
 
     return 0
