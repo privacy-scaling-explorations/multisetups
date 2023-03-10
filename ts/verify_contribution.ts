@@ -46,27 +46,23 @@ const verify_contribution = async (
 ) => {
 
     // Download the contribution and initial zkey files
-    download(contributorNum, s3bucket)
-    download(0, s3bucket)
+    const contributionDirname = getDirName(contributorNum, s3bucket)
+    const initialDirName = getDirName(0, s3bucket)
+
+    const contributionDirNameCmd = `aws s3 sync ${s3bucket}/${contributionDirname} ${WORKSPACE_DIR}/${contributionDirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    console.log("contributionDirNameCmd is:", contributionDirNameCmd);
+    const contributionDirNameOut = shelljs.exec(contributionDirNameCmd, { silent: false })
+    const initialDirNameCmd = `aws s3 sync ${s3bucket}/${initialDirName} ${WORKSPACE_DIR}/${initialDirName} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    console.log("initialDirNameCmd is:", initialDirNameCmd);
+    const initialDirNameOut = shelljs.exec(initialDirNameCmd, { silent: false })
     
     // Download the ptau file
-    const downloadPtauCmd = `aws s3 sync ${s3bucket}/ptau/${PTAU_FILENAME} ${WORKSPACE_DIR}/ --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
-    const downloadPtauOut = shelljs.exec(downloadPtauCmd, { silent: true })
+    const downloadPtauCmd = `aws s3 sync ${s3bucket}/ptau/ ${WORKSPACE_DIR}/ptau --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    console.log("downloadPtauCmd is:", downloadPtauCmd);
+    const downloadPtauOut = shelljs.exec(downloadPtauCmd, { silent: false })
 
-    if (downloadPtauOut.code !== 0) {
-        console.error(`Error: could not download file ${s3bucket}/ptau/${PTAU_FILENAME}`)
-        console.error(downloadPtauOut.code, downloadPtauOut.stderr)
-        return 1
-    }
-
-    const contributionDirname = getDirName(contributorNum, s3bucket);
-    const contributionFiles = getZkeyFiles(contributionDirname)
-
-    const initialDirName = getDirName(0, s3bucket);
-    const initialZkeyFiles = getZkeyFiles(initialDirName)
-
-    // At this point, we know that the downloaded directories each has a STEP and ROTATE zkey file.
-    // The download function will verify that.
+    const contributionFiles = getZkeyFiles(`${WORKSPACE_DIR}/${contributionDirname}`)
+    const initialZkeyFiles = getZkeyFiles(`${WORKSPACE_DIR}/${initialDirName}`)
 
     for (const zkeyName of ZKEY_NAMES.values()) {
         console.log(`Verifying the ${zkeyName} contribution.`)
@@ -76,20 +72,22 @@ const verify_contribution = async (
 
         for (const contribution of contributionFiles) {
             if (contribution.name == zkeyName) {
-                contributionFilename = path.join(WORKSPACE_DIR, contribution.name)
+                contributionFilename = contribution.filename
+                break
             }
         }
 
         for (const initial of initialZkeyFiles) {
             if (initial.name == zkeyName) {
-                initialFilename = path.join(WORKSPACE_DIR, initial.name)
+                initialFilename = initial.filename
+                break
             }
         }
 
-        const cmd = `node --es-module-specifier-resolution=node --async-stack-traces --no-warnings --max-old-space-size=2048000 --initial-old-space-size=2048000 --no-global-gc-scheduling --no-incremental-marking --max-semi-space-size=1024 --initial-heap-size=2048000 --expose-gc ./node_modules/.bin/snarkjs zkvi ${initialFilename} ${PTAU_FILENAME} ${contributionFilename}`
+        const cmd = `node --es-module-specifier-resolution=node --async-stack-traces --no-warnings --max-old-space-size=2048000 --initial-old-space-size=2048000 --no-global-gc-scheduling --no-incremental-marking --max-semi-space-size=1024 --initial-heap-size=2048000 --expose-gc ./node_modules/.bin/snarkjs -v zkvi ${initialFilename} ${WORKSPACE_DIR}/ptau/${PTAU_FILENAME} ${contributionFilename}`
         console.log("Going to run the command: " + cmd);
 
-        const out = shelljs.exec(cmd, { silent: true })
+        const out = shelljs.exec(cmd, { silent: false })
 
         if (out.code !== 0) {
             console.error(`Error: Verification failed for circuit ${zkeyName} and contributor ${contributorNum}`)
