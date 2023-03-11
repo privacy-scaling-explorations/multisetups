@@ -51,7 +51,7 @@ const download = async (
     console.log(`downloading the previous contribution ${dirname} ...`);
 
     // Download files
-    const cmd = `aws s3 sync ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const cmd = `aws s3 sync ${s3bucket}/${dirname} ${WORKSPACE_DIR}/${dirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com --no-sign-request`
     const out = shelljs.exec(cmd, { silent: false })
 
     if (out.code !== 0) {

@@ -105,7 +105,7 @@ const getDirName = (
     s3bucket: string
 ): string => {
     const dirNamePrefix = getDirNamePrefix(contributorNum);
-    const cmd = `aws s3 ls ${s3bucket}/${dirNamePrefix} | sed 's/ *PRE //g'`
+    const cmd = `aws s3 ls ${s3bucket}/${dirNamePrefix} --no-sign-request | sed 's/ *PRE //g'`
     const out = shelljs.exec(cmd, { silent: true })
 
     if (out.code !== 0) {

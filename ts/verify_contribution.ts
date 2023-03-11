@@ -60,10 +60,10 @@ const verify_contribution = async (
     const contributionDirname = getDirName(contributorNum, s3bucket)
     const initialDirName = getDirName(0, s3bucket)
 
-    const contributionDirNameCmd = `aws s3 sync ${s3bucket}/${contributionDirname} ${WORKSPACE_DIR}/${contributionDirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const contributionDirNameCmd = `aws s3 sync ${s3bucket}/${contributionDirname} ${WORKSPACE_DIR}/${contributionDirname} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com --no-sign-request`
     console.log("contributionDirNameCmd is:", contributionDirNameCmd);
     const contributionDirNameOut = shelljs.exec(contributionDirNameCmd, { silent: false })
-    const initialDirNameCmd = `aws s3 sync ${s3bucket}/${initialDirName} ${WORKSPACE_DIR}/${initialDirName} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const initialDirNameCmd = `aws s3 sync ${s3bucket}/${initialDirName} ${WORKSPACE_DIR}/${initialDirName} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com --no-sign-request`
     console.log("initialDirNameCmd is:", initialDirNameCmd);
     const initialDirNameOut = shelljs.exec(initialDirNameCmd, { silent: false })
     

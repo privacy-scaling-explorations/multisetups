@@ -47,7 +47,7 @@ const verify_initial_zkeys = async (
 
     // Download the initial zkey files
     const initialDirName = getDirName(0, s3bucket)
-    const initialDirNameCmd = `aws s3 sync ${s3bucket}/${initialDirName} ${WORKSPACE_DIR}/${initialDirName} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const initialDirNameCmd = `aws s3 sync ${s3bucket}/${initialDirName} ${WORKSPACE_DIR}/${initialDirName} --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com --no-sign-request`
     console.log("initialDirNameCmd is:", initialDirNameCmd);
     const initialDirNameOut = shelljs.exec(initialDirNameCmd, { silent: false })
 
@@ -59,7 +59,7 @@ const verify_initial_zkeys = async (
     }
 
     // Download the r1cs files
-    const downloadR1CSCmd = `aws s3 sync ${s3bucket}/r1cs/ ${WORKSPACE_DIR}/r1cs/ --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com`
+    const downloadR1CSCmd = `aws s3 sync ${s3bucket}/r1cs/ ${WORKSPACE_DIR}/r1cs/ --region us-east-1 --endpoint-url https://s3-accelerate.amazonaws.com --no-sign-request`
     const downloadR1CSOut = shelljs.exec(downloadR1CSCmd, { silent: false })
     if (downloadR1CSOut.code !== 0) {
         console.error(`Error: could not download r1cs files from ${s3bucket}/r1cs/`)
