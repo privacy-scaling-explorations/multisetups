@@ -8,7 +8,7 @@ retained. While there already exist ([1](https://github.com/briangu33/Setup),
 [3](https://github.com/celo-org/snark-setup/)) which help teams to automate
 this process, so far none exist that support this combination of requirements:
 
-1. Multiple circuits per ceremony (e.g. [MACI](https://github.com/appliedzkp/maci))
+1. Multiple circuits per ceremony (e.g. [MACI](https://github.com/privacy-scaling-explorations/maci))
 2. Large circuits (more than 1 million constraints) that cannot be set up in a
    browser
 
@@ -43,7 +43,7 @@ separate terminal. This allows the coordinator and participants to easily share
 ## Quick start with Docker
 
 ```bash
-git clone git@github.com:weijiekoh/multisetups.git &&
+git clone git@github.com:privacy-scaling-explorations/multisetups.git &&
 cd multisetups &&
 source scripts/git-snapshot.sh &&
 docker-compose build &&
@@ -96,7 +96,7 @@ QmYDsgWYRuHNYBeJABGZ6Csdj256jvj4E4WYX2dJ6w6iCj
 ## Installation
 
 ```bash
-git clone git@github.com:weijiekoh/multisetups.git &&
+git clone git@github.com:privacy-scaling-explorations/multisetups.git &&
 cd multisetups &&
 npm i
 ```
@@ -104,7 +104,7 @@ npm i
 ## Creating a new ceremony
 
 First, create a `zkeys` directory and store all your `.zkey` files in it. You
-can use [`zkey-manager`](https://github.com/appliedzkp/zkey-manager) to create
+can use [`zkey-manager`](https://github.com/privacy-scaling-explorations/zkey-manager) to create
 them.
 
 Next, run:
